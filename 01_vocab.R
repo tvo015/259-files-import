@@ -1,20 +1,33 @@
+#Load packages
 library(tidyverse)
 library(visdat)
 
+rm(list = ls()) #clean variables out of environment
+
 ds <- read_csv('data_raw/vocab.csv')
+
+#Look at whole dataset, check basic assumptions
 vis_dat(ds)
 vis_expect(ds, ~ nchar(.x) > 10)
 
+#Wide to long
 ds <- pivot_longer(ds, cols = everything(), names_to = "age", values_to = "word")
-ds$age <- as.numeric(ds$age)
+glimpse(ds) #Age is a character, that's not useful
+ds$age <- as.numeric(ds$age) #Reassign age to be numeric in base R format
+ds <- ds %>% mutate(age = as.numeric(age)) #tidy version using mutate
+glimpse(ds) #Age correctly numeric now (dbl = number with decimals)
 
+vis_dat(ds) #Wide to long helped, but we still have all of those missings
+
+#Order data set by age, remove missing rows
 ds <- ds %>% 
   arrange(age) %>%
-  filter(!is.na(word)) %>% 
-  filter(!duplicated(word))
+  drop_na()
 
-vis_dat(ds)
-vis_expect(ds, ~ nchar(.x) > 10)
+vis_dat(ds) #No more missing data, age/word are correct formats
+
+
+##COOL THINGS WE CAN DO THAT WE'RE NOT READY FOR
 
 ds <- ds %>% group_by(age) %>% mutate(n = n()) %>% ungroup()
 ds <- ds %>% mutate(item = 1, vocab_size = cumsum(item), item = NULL)
