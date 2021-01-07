@@ -26,6 +26,7 @@ ds <- ds %>%
 
 vis_dat(ds) #No more missing data, age/word are correct formats
 
+write_csv(ds, file = 'data_cleaned/vocab.csv') #Write to data_cleaned
 
 ##COOL THINGS WE CAN DO THAT WE'RE NOT READY FOR
 
