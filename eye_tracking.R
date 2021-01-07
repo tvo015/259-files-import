@@ -10,7 +10,7 @@ col_names <- read_delim('data_raw/et.txt', delim = " ", skip = 5) %>%
     porQTtime = `porQTtime(d:h:m:s.tv/ts)`) %>% 
   names()
 
-ds <- read_delim('data_raw/et.txt', delim = " ", skip = 6, col_names = col_names) %>% 
+ds <- read_delim('data_raw/et.txt', delim = " ", skip = 7, col_names = col_names) %>% 
   clean_names()
 
 ds %>% ggplot(aes(x = por_x, y = por_y)) + 
@@ -30,3 +30,12 @@ ds %>% filter(por_x > 0 & por_x < 640 & por_y > 0 & por_y < 480) %>%
 ggplot(aes(x = por_x, y = por_y)) + 
   geom_density2d_filled() + 
   theme_minimal()
+
+ds_cleaned <- ds %>% 
+  mutate(por_x = ifelse(por_x < 0 | por_x > 640, NA, por_x),
+         por_y = ifelse(por_y < 0 | por_y > 480, NA, por_y))
+
+ds_cleaned <- ds_cleaned %>% drop_na()
+ds_cleaned <- ds_cleaned %>% select(record_frame_count:pupil_y)
+
+ds_cleaned %>% write_csv("data_cleaned/et.csv")
