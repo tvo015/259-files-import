@@ -13,40 +13,20 @@ col_names <- read_delim('data_raw/et.txt', delim = " ", skip = 5) %>%
 ds <- read_delim('data_raw/et.txt', delim = " ", skip = 6, col_names = col_names) %>% 
   clean_names()
 
-vis_dat(ds)
-ds %>% select(por_x) %>% vis_expect(~ .x > 0)
-ds %>% select(por_y) %>% as.numeric() %>% vis_expect(~ .x > 0 & ~ .x <640)
+ds %>% ggplot(aes(x = por_x, y = por_y)) + 
+  geom_density2d_filled()
 
-
-ds <- pivot_longer(ds, cols = everything(), names_to = "age", values_to = "word")
-ds$age <- as.numeric(ds$age)
-
-ds <- ds %>% 
-  arrange(age) %>%
-  filter(!is.na(word)) %>% 
-  filter(!duplicated(word))
+header <- read_delim('data_raw/et.txt', delim = ":", n_max = 5, col_names = F)
+header <- header %>% rename(field = X1)
+header <- header %>% unite("value", X2:X4, remove = T, na.rm = T)
 
 vis_dat(ds)
-vis_expect(ds, ~ nchar(.x) > 10)
+ds %>% select(por_y) %>% vis_expect(~ .x > 0)
+ds %>% select(por_x) %>% vis_expect(~ .x < 640)
 
-ds <- ds %>% group_by(age) %>% mutate(n = n()) %>% ungroup()
-ds <- ds %>% mutate(item = 1, vocab_size = cumsum(item), item = NULL)
+ds %>% filter(por_x < 0 | por_x > 640 | por_y < 0 | por_y > 480) %>% head
 
-ds %>% 
-  group_by(age) %>% 
-  summarize(vocab_size = max(vocab_size)) %>% 
-  ggplot(aes(x = age, y = vocab_size)) +  
-  geom_line() + 
-  geom_point() + 
-  scale_x_continuous(name = "Age (months)", breaks = seq(12,24,1)) +
-  ylab("Productive vocabulary size") +
-  theme_minimal()
-
-ds %>% 
-  group_by(age) %>% 
-  mutate(item = 1, item_by_age = cumsum(item))%>% 
-  ungroup %>% 
-  ggplot(aes(x = age, y = item_by_age, label = word)) + 
-  geom_text(size = 3) +
-  scale_x_continuous(name = "Age (months)", breaks = seq(12,24,1)) +
+ds %>% filter(por_x > 0 & por_x < 640 & por_y > 0 & por_y < 480) %>% 
+ggplot(aes(x = por_x, y = por_y)) + 
+  geom_density2d_filled() + 
   theme_minimal()
