@@ -1,9 +1,22 @@
 library(tidyverse)
 library(visdat)
+library(janitor)
 
-ds <- read_csv('data_raw/vocab.csv')
+ds <- read_csv('data_raw/et.txt') #obviously not
+
+col_names <- read_delim('data_raw/et.txt', delim = " ", skip = 5) %>% 
+  rename(
+    sceneQTtime = `sceneQTtime(d:h:m:s.tv/ts)`, 
+    porQTtime = `porQTtime(d:h:m:s.tv/ts)`) %>% 
+  names()
+
+ds <- read_delim('data_raw/et.txt', delim = " ", skip = 6, col_names = col_names) %>% 
+  clean_names()
+
 vis_dat(ds)
-vis_expect(ds, ~ nchar(.x) > 10)
+ds %>% select(por_x) %>% vis_expect(~ .x > 0)
+ds %>% select(por_y) %>% as.numeric() %>% vis_expect(~ .x > 0 & ~ .x <640)
+
 
 ds <- pivot_longer(ds, cols = everything(), names_to = "age", values_to = "word")
 ds$age <- as.numeric(ds$age)
