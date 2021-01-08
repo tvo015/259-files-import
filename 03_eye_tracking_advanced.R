@@ -71,8 +71,11 @@ ggsave(paste0("eda/et_distribution_figs/",id,"_check.png"), width = 8, height = 
 ds_cleaned %>% write_csv(paste0("data_cleaned/",id,".csv"))
 
 #Endless possibilities for filenames
+#glue provides a nicer way to compose filename (or any) strings
 str_glue("data_cleaned/{id}_{test_date}.csv")
 str_glue("data_cleaned/{id}/et_cleaned.csv")
+
+#If you need more control over formatting numbers (esp decimals) in a string, sprintf is another example
 
 
 
