@@ -72,12 +72,16 @@ ds_cleaned %>% write_csv(paste0("data_cleaned/",id,".csv"))
 
 #Endless possibilities for filenames
 #glue provides a nicer way to compose filename (or any) strings
+#If you need more control over formatting numbers (esp decimals) in a string, sprintf is another example
 str_glue("data_cleaned/{id}_{test_date}.csv")
 str_glue("data_cleaned/{id}/et_cleaned.csv")
 
-#If you need more control over formatting numbers (esp decimals) in a string, sprintf is another example
+#But what about our header info? Should we save that too? Or maybe save an RDS file to cleaned instead
+save(file = paste0("data_cleaned/",id,".RData"), list = c("ds_cleaned", "header"))
 
-
+#Clear workspace and check that we can reload our saved data
+rm(list = ls())
+load(paste0("data_cleaned/101.RData"))
 
 
 
