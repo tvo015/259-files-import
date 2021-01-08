@@ -69,6 +69,7 @@ ds_cleaned %>% write_csv(paste0("data_cleaned/",id,".csv"))
 
 #Endless possibilities for filenames
 str_glue("data_cleaned/{id}_{test_date}.csv")
+str_glue("data_cleaned/{id}/et_cleaned.csv")
 
 
 
