@@ -62,7 +62,10 @@ ds_cleaned <- ds_cleaned %>% select(record_frame_count:pupil_y)
 ds_cleaned %>% 
   ggplot(aes(x = por_x, y = por_y)) + 
   geom_density2d_filled() + 
-  theme_minimal()
+  theme_minimal() + 
+  theme(legend.position = "none")
+#Save the plot to eda as a data check
+ggsave(paste0("eda/et_distribution_figs/",id,"_check.png"), width = 8, height = 6, units = "in")
 
 #Write the data, but generate the output file from the id to make it more extensible
 ds_cleaned %>% write_csv(paste0("data_cleaned/",id,".csv"))
