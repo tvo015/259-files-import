@@ -23,6 +23,7 @@ vis_dat(ds) #Wide to long helped, but we still have all of those missings
 ds <- ds %>% 
   arrange(age) %>%
   drop_na()
+#EXPLAIN PIPES HERE
 
 vis_dat(ds) #No more missing data, age/word are correct formats
 
