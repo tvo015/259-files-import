@@ -4,32 +4,37 @@ library(visdat)
 
 rm(list = ls()) #clean variables out of environment
 
+#Read the data file (all defaults work so all we need is a filename)
 ds <- read_csv('data_raw/vocab.csv')
 
 #Look at whole dataset, check basic assumptions
-vis_dat(ds)
-vis_expect(ds, ~ nchar(.x) > 10)
+vis_miss(ds) 
 
-#Wide to long
+#Wide to long (we'll go over this next week)
 ds <- pivot_longer(ds, cols = everything(), names_to = "age", values_to = "word")
+
+#Age should be a number -- let's find that problem and fix it
 glimpse(ds) #Age is a character, that's not useful
-ds$age <- as.numeric(ds$age) #Reassign age to be numeric in base R format
-ds <- ds %>% mutate(age = as.numeric(age)) #tidy version using mutate
+ds$age <- as.numeric(ds$age) #Reassign age to be numeric
 glimpse(ds) #Age correctly numeric now (dbl = number with decimals)
 
-vis_dat(ds) #Wide to long helped, but we still have all of those missings
+vis_miss(ds) #Wide to long helped, but we still have all of those missings
 
 #Order data set by age, remove missing rows
 ds <- ds %>% 
   arrange(age) %>%
   drop_na()
-#EXPLAIN PIPES HERE
+#What's with all the %>% ? (Pipes)
 
-vis_dat(ds) #No more missing data, age/word are correct formats
+vis_miss(ds) #No more missing data, age/word are correct formats
 
-write_csv(ds, file = 'data_cleaned/vocab.csv') #Write to data_cleaned
+write_csv(data = ds, file = 'data_cleaned/vocab.csv') #Write to data_cleaned
 
-##COOL THINGS WE CAN DO THAT WE'RE NOT READY FOR
+
+
+##COOL THINGS WE CAN DO THAT WE'RE NOT READY FOR YET
+
+vis_expect(ds, ~ nchar(.x) > 10)
 
 ds <- ds %>% group_by(age) %>% mutate(n = n()) %>% ungroup()
 ds <- ds %>% mutate(item = 1, vocab_size = cumsum(item), item = NULL)
