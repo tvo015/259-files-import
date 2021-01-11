@@ -3,23 +3,23 @@ library(visdat)
 library(janitor)
 library(stringr) #help us deal with some messy data
 
-rm(list = ls())
+rm(list = ls()) #Clean out workspace
 
 #Somethings we could do better
 files <- list.files(path = "data_raw/", pattern = "*.txt", full.names =  T)
-id <- str_extract(files, "\\d\\d\\d")
+id <- str_extract(files, "\\d\\d\\d") #Pull the id from the filename \\d\\d\\d means "find 3 digits"
 
-#Let's figure out the names in advance
+#Let's figure out the names automatically
 #Rename the ones we don't like
-col_names <- read_delim(files, delim = " ", skip = 6) %>% 
+col_names <- read_delim(files, delim = " ", skip = 6) 
+col_names %>% 
   rename(
-    sceneQTtime = `sceneQTtime(d:h:m:s.tv/ts)`, 
-    porQTtime = `porQTtime(d:h:m:s.tv/ts)`) %>% 
-  clean_names() %>% 
+    scene_time = `sceneQTtime(d:h:m:s.tv/ts)`, 
+    por_time = `porQTtime(d:h:m:s.tv/ts)`) %>% 
   names()
 
 #Read the data in, this time skip the header lines and use our pre-specified names
-ds <- read_delim(files, delim = " ", skip = 7, col_names = col_names)
+ds <- read_delim(files, delim = " ", skip = 7, col_names = col_names) %>% clean_names()
 
 #Let's filter our data again, but use the metadata as a guide
 header <- read_delim('data_raw/101.txt', delim = ":", n_max = 5, col_names = F) #Not the most useful yet
