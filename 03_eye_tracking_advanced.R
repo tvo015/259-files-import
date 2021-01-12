@@ -5,14 +5,14 @@ library(stringr) #help us deal with some messy data
 
 rm(list = ls()) #Clean out workspace
 
-#Somethings we could do better
+#Some things we could do better
 files <- list.files(path = "data_raw/", pattern = "*.txt", full.names =  T)
 id <- str_extract(files, "\\d\\d\\d") #Pull the id from the filename \\d\\d\\d means "find 3 digits"
 
 #Let's figure out the names automatically
 #Rename the ones we don't like
 col_names <- read_delim(files, delim = " ", skip = 6) 
-col_names %>% 
+col_names <- col_names %>% 
   rename(
     scene_time = `sceneQTtime(d:h:m:s.tv/ts)`, 
     por_time = `porQTtime(d:h:m:s.tv/ts)`) %>% 
