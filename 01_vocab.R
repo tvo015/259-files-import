@@ -1,6 +1,6 @@
 #Load packages
 library(tidyverse)
-library(visdat)
+library(visdat) #"Visualize data"
 
 rm(list = ls()) #clean variables out of environment
 
