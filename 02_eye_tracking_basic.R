@@ -26,7 +26,8 @@ ds %>% ggplot(aes(x = por_x, y = por_y)) +
 #Were they parsed correctly? Yes 
 vis_dat(ds)
 
-#Let's set bad values to missing and save to a ds_cleaned tibble
+#Let's set bad values to missing and save to a ds_cleaned tibble 
+#(more on this next week)
 ds_cleaned <- ds %>% 
   mutate(por_x = ifelse(por_x < 0 | por_x > 640, NA, por_x),
          por_y = ifelse(por_y < 0 | por_y > 480, NA, por_y))
@@ -38,15 +39,14 @@ ds_cleaned %>%
   theme_minimal()
 
 #Save the plot to eda as a data check
-ggsave(paste0("eda/et_distribution_figs/",id,"_check.png"), width = 8, height = 6, units = "in")
+ggsave(paste0("eda/et_distribution_figs/101_check.png"), width = 8, height = 6, units = "in")
 
 #Let's also add a row with the subject id to the data file
 ds_cleaned <- ds_cleaned %>% 
   add_column(id = 101, .before = "record_frames")
 
-#Decide what to save
+#Drop NA?
 #ds_cleaned <- ds_cleaned %>% drop_na() #Is this actually a good idea?
-ds_cleaned <- ds_cleaned %>% select(record_frame_count:pupil_y)
 
 #Write to file
 ds_cleaned %>% write_csv("data_cleaned/101.csv")

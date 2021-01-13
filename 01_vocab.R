@@ -4,10 +4,13 @@ library(visdat)
 
 rm(list = ls()) #clean variables out of environment
 
+ds <- read_csv('vocab.csv')
+getwd()
+
 #Read the data file (all defaults work so all we need is a filename)
 ds <- read_csv('data_raw/vocab.csv')
 
-#Look at whole dataset, check basic assumptions
+#Check for 'missing' values
 vis_miss(ds) 
 
 #Wide to long (we'll go over this next week)
