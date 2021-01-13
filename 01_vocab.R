@@ -24,13 +24,11 @@ vis_miss(ds) #Wide to long helped, but we still have all of those missings
 ds <- ds %>% 
   arrange(age) %>%
   drop_na()
-#What's with all the %>% ? (Pipes)
+#What's with all the %>% ? (pipes)
 
 vis_miss(ds) #No more missing data, age/word are correct formats
 
-write_csv(data = ds, file = 'data_cleaned/vocab.csv') #Write to data_cleaned
-
-
+write_csv(data = ds, file = 'data_cleaned/vocab.csv') #Write to data_cleaneds
 
 ##COOL THINGS WE CAN DO THAT WE'RE NOT READY FOR YET
 

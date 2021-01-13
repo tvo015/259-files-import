@@ -5,21 +5,29 @@ library(stringr) #help us deal with some messy data
 
 rm(list = ls()) #Clean out workspace
 
-#Some things we could do better
+#This is a more advanced version of eye_tracking_basic
+#Rather than "hard coding" things like id and resolution,
+#we will pull them from the header and the file name
+
+#Read the file names from the folder
 files <- list.files(path = "data_raw/", pattern = "*.txt", full.names =  T)
-id <- str_extract(files, "\\d\\d\\d") #Pull the id from the filename \\d\\d\\d means "find 3 digits"
+
+#Pull the id from the filename \\d\\d\\d means "find 3 digits"
+id <- str_extract(files, "\\d\\d\\d") 
 
 #Let's figure out the names automatically
-#Rename the ones we don't like
+#Step 1: Read in the dataset with the terrible names
 col_names <- read_delim(files, delim = " ", skip = 6) 
+#Step 2: Rename the ones we don't like and save back to the tibble
 col_names <- col_names %>% 
   rename(
     scene_time = `sceneQTtime(d:h:m:s.tv/ts)`, 
-    por_time = `porQTtime(d:h:m:s.tv/ts)`) %>% 
-  names()
+    por_time = `porQTtime(d:h:m:s.tv/ts)`) 
+#Step 3: Clean the names and then pull the list of names from the tibble
+new_col_names <- col_names %>% clean_names() %>% names()
 
 #Read the data in, this time skip the header lines and use our pre-specified names
-ds <- read_delim(files, delim = " ", skip = 7, col_names = col_names) %>% clean_names()
+ds <- read_delim(files, delim = " ", skip = 7, col_names = new_col_names) 
 
 #Let's filter our data again, but use the metadata as a guide
 header <- read_delim('data_raw/101.txt', delim = ":", n_max = 5, col_names = F) #Not the most useful yet
